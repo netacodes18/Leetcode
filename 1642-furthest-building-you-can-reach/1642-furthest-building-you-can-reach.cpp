@@ -11,13 +11,16 @@ public:
             if (diff <= 0)
                 continue;
 
+            // Temporarily assign a ladder
             minHeap.push(diff);
 
+            // More climbs than ladders -> smallest climb uses bricks
             if (minHeap.size() > ladders) {
                 bricks -= minHeap.top();
                 minHeap.pop();
             }
 
+            // Not enough bricks
             if (bricks < 0)
                 return i;
         }
