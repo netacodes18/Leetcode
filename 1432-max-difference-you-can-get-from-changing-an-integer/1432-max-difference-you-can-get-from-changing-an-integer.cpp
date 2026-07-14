@@ -3,37 +3,43 @@ public:
     int maxDiff(int num) {
         string s = to_string(num);
 
-        // Maximum number
+        // Largest
         string mx = s;
-        char x = 0;
+        char ch = '#';
         for (char c : mx) {
             if (c != '9') {
-                x = c;
+                ch = c;
                 break;
             }
         }
-        if (x) {
+        if (ch != '#') {
             for (char &c : mx)
-                if (c == x) c = '9';
+                if (c == ch)
+                    c = '9';
+
         }
 
-        // Minimum number
+        // Smallest
         string mn = s;
-        if (mn[0] != '1') {
-            x = mn[0];
-            for (char &c : mn)
-                if (c == x) c = '1';
-        } else {
-            x = 0;
-            for (int i = 1; i < mn.size(); i++) {
-                if (mn[i] != '0' && mn[i] != '1') {
-                    x = mn[i];
+        ch = '#';
+
+        for (int i = 0; i < mn.size(); i++) {
+            if (i == 0) {
+                if (mn[i] != '1') {
+                    ch = mn[i];
+                    for (char &c : mn)
+                        if (c == ch)
+                            c = '1';
                     break;
                 }
-            }
-            if (x) {
-                for (char &c : mn)
-                    if (c == x) c = '0';
+            } else {
+                if (mn[i] != '0' && mn[i] != mn[0]) {
+                    ch = mn[i];
+                    for (char &c : mn)
+                        if (c == ch)
+                            c = '0';
+                    break;
+                }
             }
         }
 
