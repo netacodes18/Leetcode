@@ -15,7 +15,6 @@ public:
     Node* dfs(Node* head) {
 
         Node* curr = head;
-        Node* last = head;
 
         while (curr) {
 
@@ -23,31 +22,30 @@ public:
 
             if (curr->child) {
 
-                Node* childHead = curr->child;
+                // Flatten child list
+                Node* childHead = dfs(curr->child);
 
-                Node* childTail = dfs(childHead);
-
+                // Attach child after current
                 curr->next = childHead;
                 childHead->prev = curr;
-
                 curr->child = NULL;
 
-                if (nxt) {
-                    childTail->next = nxt;
-                    nxt->prev = childTail;
+                // Find tail of child list
+                Node* tail = childHead;
+                while (tail->next) {
+                    tail = tail->next;
                 }
 
-                last = childTail;
-                curr = childTail;
-            }
-            else {
-                last = curr;
+                // Connect tail with original next
+                tail->next = nxt;
+                if (nxt)
+                    nxt->prev = tail;
             }
 
             curr = curr->next;
         }
 
-        return last;
+        return head;      // return head instead of tail
     }
 
     Node* flatten(Node* head) {
@@ -55,8 +53,6 @@ public:
         if (!head)
             return NULL;
 
-        dfs(head);
-
-        return head;
+        return dfs(head);
     }
 };
