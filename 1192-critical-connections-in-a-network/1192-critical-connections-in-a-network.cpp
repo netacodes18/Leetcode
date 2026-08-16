@@ -14,28 +14,20 @@ public:
 
         for (auto it : adj[node]) {
 
-            // Don't go back through the edge
-            // from which we came
             if (it == parent)
                 continue;
 
             if (vis[it] == 0) {
 
-                // DFS
                 dfs(it, node, adj, vis, tin, low, bridges);
 
-                // Update low value after returning
                 low[node] = min(low[node], low[it]);
 
-                // No alternate path from it's subtree
-                // back to node or any ancestor
                 if (low[it] > tin[node]) {
                     bridges.push_back({node, it});
                 }
             }
             else {
-
-                // Back edge
                 low[node] = min(low[node], tin[it]);
             }
         }
@@ -45,7 +37,6 @@ public:
         int n,
         vector<vector<int>>& connections) {
 
-        // Build adjacency list
         vector<int> adj[n];
 
         for (auto edge : connections) {
