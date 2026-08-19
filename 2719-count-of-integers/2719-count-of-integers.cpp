@@ -8,14 +8,11 @@ public:
 
     int f(string &s, int idx, bool tight, int sum) {
 
-        // Sum already exceeded maximum
         if (sum > maxi)
             return 0;
 
-        // All digits processed
-        if (idx == s.size()) {
+        if (idx == s.size())
             return (sum >= mini && sum <= maxi);
-        }
 
         if (dp[idx][tight][sum] != -1)
             return dp[idx][tight][sum];
@@ -37,13 +34,6 @@ public:
         }
 
         return dp[idx][tight][sum] = res;
-    }
-
-    int count(string s) {
-
-        memset(dp, -1, sizeof(dp));
-
-        return f(s, 0, true, 0);
     }
 
     string subtractOne(string s) {
@@ -70,11 +60,17 @@ public:
         mini = min_sum;
         maxi = max_sum;
 
-        int right = count(num2);
+        // Count [0 ... num2]
+        memset(dp, -1, sizeof(dp));
 
+        int right = f(num2, 0, true, 0);
+
+        // Count [0 ... num1-1]
         string prev = subtractOne(num1);
 
-        int left = count(prev);
+        memset(dp, -1, sizeof(dp));
+
+        int left = f(prev, 0, true, 0);
 
         return (right - left + MOD) % MOD;
     }
