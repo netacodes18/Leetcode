@@ -14,14 +14,13 @@ public:
             reservedRows.insert(row);
         }
 
-        // Rows with no reservations can always accommodate 2 groups
         int ans = (n - reservedRows.size()) * 2;
 
         for (int row : reservedRows) {
 
-            bool left = true;   // seats 2-5
-            bool middle = true; // seats 4-7
-            bool right = true;  // seats 6-9
+            bool left = true;   
+            bool middle = true; 
+            bool right = true;  
 
             for (int seat = 2; seat <= 5; seat++) {
                 if (grid[row].count(seat)) {
