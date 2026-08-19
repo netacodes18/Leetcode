@@ -2,51 +2,31 @@ class Solution {
 public:
     int maxNumberOfFamilies(int n, vector<vector<int>>& reservedSeats) {
 
-        // Store reserved seats row-wise
-        map<int, set<int>> grid;
-        set<int> reservedRows;
+        unordered_map<int, int> rows;
 
-        for (vector<int> x : reservedSeats) {
+        for (auto &x : reservedSeats) {
             int row = x[0];
             int seat = x[1];
 
-            grid[row].insert(seat);
-            reservedRows.insert(row);
+            rows[row] |= (1 << seat);
         }
 
-        int ans = (n - reservedRows.size()) * 2;
+        int left   = (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5);
+        int middle = (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7);
+        int right  = (1 << 6) | (1 << 7) | (1 << 8) | (1 << 9);
 
-        for (int row : reservedRows) {
+        int ans = (n - rows.size()) * 2;
 
-            bool left = true;   
-            bool middle = true; 
-            bool right = true;  
+        for (auto &[row, mask] : rows) {
 
-            for (int seat = 2; seat <= 5; seat++) {
-                if (grid[row].count(seat)) {
-                    left = false;
-                    break;
-                }
-            }
+            bool leftFree   = (mask & left) == 0;
+            bool middleFree = (mask & middle) == 0;
+            bool rightFree  = (mask & right) == 0;
 
-            for (int seat = 4; seat <= 7; seat++) {
-                if (grid[row].count(seat)) {
-                    middle = false;
-                    break;
-                }
-            }
-
-            for (int seat = 6; seat <= 9; seat++) {
-                if (grid[row].count(seat)) {
-                    right = false;
-                    break;
-                }
-            }
-
-            if (left && right) {
+            if (leftFree && rightFree) {
                 ans += 2;
             }
-            else if (left || middle || right) {
+            else if (leftFree || middleFree || rightFree) {
                 ans += 1;
             }
         }
