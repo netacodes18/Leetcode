@@ -5,7 +5,7 @@ public:
 
         int x = k;
 
-        while (s.count(x)) {
+        while (s.count(x)!=0) {
             x += k;
         }
 
