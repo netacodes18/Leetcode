@@ -14,7 +14,7 @@ public:
         int right = (philosopher + 1) % 5;
 
         // Lock both forks without deadlock
-        std::lock(forks[left], forks[right]);
+       lock(forks[left], forks[right]);
 
         // Now both forks are ours
         pickLeftFork();
