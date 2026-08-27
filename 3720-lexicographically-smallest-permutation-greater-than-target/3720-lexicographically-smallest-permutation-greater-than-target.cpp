@@ -1,82 +1,56 @@
 class Solution {
 public:
     string lexGreaterPermutation(string s, string target) {
-        int n = s.length();
+        int freq[26] = {};
 
-        vector<int> freq(26, 0);
+        for (char c : s)
+            freq[c - 'a']++;
 
-        for (char x : s) {
-            freq[x - 'a']++;
-        }
+        int n = target.size();
 
-        string per = "";
+        for (int i = n - 1; i >= 0; i--) {
+            for (int ch = target[i] - 'a' + 1; ch < 26; ch++) {
 
-        for (int pos = 0; pos < n; pos++) {
+                if (freq[ch] == 0)
+                    continue;
 
-            int cur = target[pos] - 'a';
+                freq[ch]--;
 
-            char firele = '{';
+                int temp[26];
+                for (int k = 0; k < 26; k++)
+                    temp[k] = freq[k];
 
-            for (int i = cur; i < 26; i++) {
-                if (freq[i] > 0) {
-                    firele = char('a' + i);
-                    break;
-                }
-            }
+                bool allFoundLeft = true;
 
-            if (firele == '{') {
-                break;
-            }
+                for (int j = 0; j < i; j++) {
+                    int x = target[j] - 'a';
 
-            if (firele > target[pos]) {
-
-                per += firele;
-                freq[firele - 'a']--;
-
-                for (int i = 0; i < 26; i++) {
-                    while (freq[i] > 0) {
-                        per += char('a' + i);
-                        freq[i]--;
+                    if (temp[x] == 0) {
+                        allFoundLeft = false;
+                        break;
                     }
+
+                    temp[x]--;
                 }
 
-                return per;
-            }
+                if (allFoundLeft) {
+                    string ans = target.substr(0, i);
+                    ans += char('a' + ch);
 
-            per += firele;
-            freq[firele - 'a']--;
-        }
+                    for (int j = 0; j < i; j++)
+                        freq[target[j] - 'a']--;
 
-        int len = (int)per.length();
-
-        for (int pos = len - 1; pos >= 0; pos--) {
-
-            freq[per[pos] - 'a']++;
-
-            char firele = '{';
-
-            for (int i = target[pos] - 'a' + 1; i < 26; i++) {
-                if (freq[i] > 0) {
-                    firele = char('a' + i);
-                    break;
-                }
-            }
-
-            if (firele != '{') {
-
-                string ans = per.substr(0, pos);
-
-                ans += firele;
-                freq[firele - 'a']--;
-
-                for (int i = 0; i < 26; i++) {
-                    while (freq[i] > 0) {
-                        ans += char('a' + i);
-                        freq[i]--;
+                    for (int x = 0; x < 26; x++) {
+                        while (freq[x] > 0) {
+                            ans += char('a' + x);
+                            freq[x]--;
+                        }
                     }
+
+                    return ans;
                 }
 
-                return ans;
+                freq[ch]++;
             }
         }
 
