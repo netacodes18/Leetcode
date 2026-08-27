@@ -1,56 +1,58 @@
 class Solution {
 public:
     string lexGreaterPermutation(string s, string target) {
-        int freq[26] = {};
+        int n = s.length();
 
-        for (char c : s)
-            freq[c - 'a']++;
+        vector<int> freq(26, 0);
 
-        int n = target.size();
+        for(char x : s)
+            freq[x - 'a']++;
 
-        for (int i = n - 1; i >= 0; i--) {
-            for (int ch = target[i] - 'a' + 1; ch < 26; ch++) {
+        for(int i = n - 1; i >= 0; i--) {
+            for(int ch = target[i] - 'a' + 1; ch < 26; ch++) {
 
-                if (freq[ch] == 0)
+                if(freq[ch] == 0)
                     continue;
 
-                freq[ch]--;
+                freq[ch]--;  // FIXED: ch is already 0-25, so use freq[ch]
 
                 int temp[26];
-                for (int k = 0; k < 26; k++)
-                    temp[k] = freq[k];
 
-                bool allFoundLeft = true;
+                for(int j = 0; j < 26; j++)
+                    temp[j] = freq[j];
 
-                for (int j = 0; j < i; j++) {
-                    int x = target[j] - 'a';
+                bool allfound = true;  // FIXED: assume left part is possible initially
 
-                    if (temp[x] == 0) {
-                        allFoundLeft = false;
+                for(int k = 0; k < i; k++) {
+                    int x = target[k] - 'a';
+
+                    if(temp[x] == 0) {
+                        allfound = false;
                         break;
                     }
 
-                    temp[x]--;
+                    temp[x]--;  // FIXED: decrement x (character index), not k
                 }
 
-                if (allFoundLeft) {
+                if(allfound) {
                     string ans = target.substr(0, i);
+
                     ans += char('a' + ch);
 
-                    for (int j = 0; j < i; j++)
+                    for(int j = 0; j < i; j++)
                         freq[target[j] - 'a']--;
 
-                    for (int x = 0; x < 26; x++) {
-                        while (freq[x] > 0) {
-                            ans += char('a' + x);
-                            freq[x]--;
+                    for(int p = 0; p < 26; p++) {
+                        while(freq[p] > 0) {
+                            ans += char('a' + p);  // FIXED: removed extra "ans +="
+                            freq[p]--;            // FIXED: decrement inside while
                         }
                     }
 
                     return ans;
                 }
 
-                freq[ch]++;
+                freq[ch]++;  // restore chosen character if it didn't work
             }
         }
 
