@@ -5,6 +5,7 @@ public:
 
         int mn = 0, mx = 0;
 
+        // Find indices of minimum and maximum
         for (int i = 0; i < n; i++) {
             if (nums[i] < nums[mn])
                 mn = i;
@@ -13,13 +14,22 @@ public:
                 mx = i;
         }
 
-        int a = min(mn, mx);
-        int b = max(mn, mx);
+        // CASE 1:
+        // Remove min from front + max from front
+        int case1 = max(mn, mx) + 1;
 
-        int fromFront = b + 1;
-        int fromBack = n - a;
-        int oneEach = (a + 1) + (n - b);
+        // CASE 2:
+        // Remove min from back + max from back
+        int case2 = n - min(mn, mx);
 
-        return min({fromFront, fromBack, oneEach});
+        // CASE 3:
+        // Remove min from front + max from back
+        int case3 = (mn + 1) + (n - mx);
+
+        // CASE 4:
+        // Remove max from front + min from back
+        int case4 = (mx + 1) + (n - mn);
+
+        return min({case1, case2, case3, case4});
     }
 };
