@@ -1,45 +1,42 @@
 class Solution {
 public:
-    const int MOD = 1e9 + 7;
-    int n;
+    int M = 1e9 + 7;
     int dp[2001];
-    vector<int> nextSame;
+    vector<int> prev;
 
-    int solve(int i, string &s) {
-        if (i == n)
+    int solve(int n) {
+        if (n == 0)
             return 1;
 
-        if (dp[i] != -1)
-            return dp[i];
+        if (dp[n] != -1)
+            return dp[n];
 
-        long long skip = solve(i + 1, s);
+        int total = (2LL * solve(n - 1)) % M;
 
-        long long take = solve(i + 1, s);
-
-        if (nextSame[i] != -1) {
-            take -= solve(nextSame[i] + 1, s);
+        if (prev[n] != 0) {
+            int duplicates = solve(prev[n] - 1);
+            total = (total - duplicates + M) % M;
         }
 
-        return dp[i] = (skip + take) % MOD;
+        return dp[n] = total;
     }
 
     int distinctSubseqII(string s) {
-        n = s.length();
+        int n = s.length();
 
         memset(dp, -1, sizeof(dp));
 
-        nextSame.assign(n, -1);
+        prev.assign(n + 1, 0);
 
-        vector<int> last(26, -1);
+        vector<int> last(26, 0);
 
-        for (int i = n - 1; i >= 0; i--) {
-            int ch = s[i] - 'a';
+        for (int i = 1; i <= n; i++) {
+            int ch = s[i - 1] - 'a';
 
-            nextSame[i] = last[ch];
-
+            prev[i] = last[ch];
             last[ch] = i;
         }
 
-        return (solve(0, s) - 1 + MOD) % MOD;
+        return (solve(n) - 1 + M) % M;
     }
 };
