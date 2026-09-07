@@ -12,14 +12,10 @@ public:
         if (dp[i] != -1)
             return dp[i];
 
-        // Skip s[i]
         long long skip = solve(i + 1, s);
 
-        // Take s[i]
         long long take = solve(i + 1, s);
 
-        // If this character appeared before,
-        // remove the duplicate subsequences
         if (nextSame[i] != -1) {
             take -= solve(nextSame[i] + 1, s);
         }
@@ -36,7 +32,6 @@ public:
 
         vector<int> last(26, -1);
 
-        // Find next occurrence of every character
         for (int i = n - 1; i >= 0; i--) {
             int ch = s[i] - 'a';
 
