@@ -1,72 +1,43 @@
 class Solution {
 public:
     vector<string> maxNumOfSubstrings(string s) {
+        int n=s.length();
 
-        int n = s.size();
+        vector<int> start(26,-1);
+        vector<int> end(26,-1);
+        vector<bool> isValid(26,true);
 
-        // 1. First and last occurrence of every character
-        vector<int> first(26, n);
-        vector<int> last(26, -1);
-
-        for (int i = 0; i < n; i++) {
-            int c = s[i] - 'a';
-
-            first[c] = min(first[c], i);
-            last[c] = i;
+        for(int i=0;i<n;i++){
+            if(start[s[i]-'a']==-1){
+                start[s[i]-'a']=i;
+            }
+            end[s[i]-'a']=i;
         }
 
-        vector<pair<int, int>> intervals;
-
-        // 2. Create a valid interval for every character
-        for (int c = 0; c < 26; c++) {
-
-            if (last[c] == -1)
-                continue;
-
-            int l = first[c];
-            int r = last[c];
-
-            bool valid = true;
-
-            // 3. Expand the interval
-            for (int i = l; i <= r; i++) {
-
-                int x = s[i] - 'a';
-
-                // Character occurs before l -> invalid
-                if (first[x] < l) {
-                    valid = false;
+        for(int c=0;c<26;c++){
+            if(start[c]==-1) continue;
+            for(int i=start[c];i<end[c];i++){
+                if(start[s[i]-'a']<start[c]){
+                    isValid[c]=false;
                     break;
                 }
-
-                // Include all occurrences of this character
-                r = max(r, last[x]);
-            }
-
-            if (valid) {
-                intervals.push_back({l, r});
+                end[c]=max(end[c],end[s[i]-'a']);
             }
         }
 
-        // 4. Sort by ending position
-        sort(intervals.begin(), intervals.end(),
-             [](pair<int, int>& a, pair<int, int>& b) {
-                 return a.second < b.second;
-             });
+        int last=INT_MAX;
 
-        // 5. Greedily select non-overlapping intervals
-        vector<string> ans;
+        vector<string> res;
 
-        int lastEnd = -1;
+        for(int i=n-1;i>=0;i--){
+            int c=s[i]-'a';
+            if(isValid[c]==false) continue;
 
-        for (auto [l, r] : intervals) {
-
-            if (l > lastEnd) {
-                ans.push_back(s.substr(l, r - l + 1));
-                lastEnd = r;
+            if(i==start[c] && end[c]<last){
+                res.push_back(s.substr(i,end[c]-i+1));
+                last=i;
             }
         }
-
-        return ans;
+        return res;
     }
 };
